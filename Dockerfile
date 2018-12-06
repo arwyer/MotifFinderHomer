@@ -9,6 +9,7 @@ MAINTAINER KBase Developer
 # RUN apt-get update
 RUN apt-get update
 RUN apt-get --yes --force-yes install build-essential
+RUN apt-get --yes --force-yes install wget
 
 
 # -----------------------------------------
