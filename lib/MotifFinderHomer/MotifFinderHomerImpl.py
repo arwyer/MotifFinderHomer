@@ -97,6 +97,8 @@ class MotifFinderHomer:
                     locDict['sequence_id'] = {'contig' : s['source']['location'][0][0],'start':str(s['source']['location'][0][1])}
         if len(locDict.keys()) > 0:
             homer_params['absolute_locations'] = locDict
+        homer_params['min_len'] = motMin
+        homer_params['max_len'] = motMax
         obj_ref = MOU.UploadFromHomer(homer_params)['obj_ref']
         #memeMotifList = MEU.parse_meme_output()
 
