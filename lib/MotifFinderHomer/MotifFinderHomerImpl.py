@@ -84,7 +84,7 @@ class MotifFinderHomer:
         HU.run_homer_command(HomerMotifCommand)
         HU.run_homer_command(HomerLocationCommand)
         homer_out_path = '/kb/module/work/tmp/homer_out'
-        homer_params = {'ws_name' : params['workspace_name'], 'path' : homer_out_path + '/homerMotifs.all.motifs','location_path' : homer_out_path + '/homer_locations.txt','obj_name' : 'Homer_Motif_Set'}
+        homer_params = {'ws_name' : params['workspace_name'], 'path' : homer_out_path + '/homerMotifs.all.motifs','location_path' : homer_out_path + '/homer_locations.txt','obj_name' : params['obj_name']}
         MOU = MotifUtils(self.callback_url)
         dfu = DataFileUtil(self.callback_url)
         locDict = {}
@@ -348,7 +348,7 @@ function openReport(evt, reportName) {
         FastaParams = {'workspace_name' : params['workspace_name'] , 'SequenceSetRef' : SSref , 'fasta_outpath' : fastapath}
         output = self.BuildFastaFromSequenceSet(ctx,FastaParams)
 
-        findmotifsparams= {'workspace_name' : params['workspace_name'],'fastapath':fastapath,'motif_min_length':params['motif_min_length'],'motif_max_length':params['motif_max_length'],'SS_ref':SSref}
+        findmotifsparams= {'workspace_name' : params['workspace_name'],'fastapath':fastapath,'motif_min_length':params['motif_min_length'],'motif_max_length':params['motif_max_length'],'SS_ref':SSref,'obj_name' :params['obj_name']}
 
         output = self.find_motifs(ctx,findmotifsparams)[0]
         #END ExtractPromotersFromFeatureSetandDiscoverMotifs
