@@ -22,6 +22,7 @@ from MotifFinderHomer.Utils.MakeNewReport import MakeReport
 #from identify_promoter.Utils.ParsePromFile import makePromHTMLReports
 import subprocess
 from biokbase.workspace.client import Workspace
+from MotifFinderHomer.Utils.FastaUtils import RemoveRepeats
 #END_HEADER
 
 
@@ -277,7 +278,7 @@ class MotifFinderHomer:
         fastapath = '/kb/module/work/tmp/SeqSet.fa'
         FastaParams = {'workspace_name' : params['workspace_name'] , 'SequenceSetRef' : SSref , 'fasta_outpath' : fastapath}
         output = self.BuildFastaFromSequenceSet(ctx,FastaParams)
-
+        RemoveRepeats(fastapath)
         findmotifsparams= {'workspace_name' : params['workspace_name'],'fastapath':fastapath,'motif_min_length':params['motif_min_length'],'motif_max_length':params['motif_max_length'],'SS_ref':SSref,'obj_name' :params['obj_name']}
 
         output = self.find_motifs(ctx,findmotifsparams)[0]
