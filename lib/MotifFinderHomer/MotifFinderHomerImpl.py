@@ -81,7 +81,7 @@ class MotifFinderHomer:
         #promoterFastaFilePath = self.get_promoter_for_gene(ctx,params)[0]
         promoterFastaFilePath = params['fastapath']
 
-        HomerMotifCommand = HU.build_homer_motif_command(promoterFastaFilePath)
+        HomerMotifCommand = HU.build_homer_motif_command(promoterFastaFilePath,motMin,motMax)
         HomerLocationCommand = HU.build_homer_location_command(promoterFastaFilePath)
         HU.run_homer_command(HomerMotifCommand)
         HU.run_homer_command(HomerLocationCommand)

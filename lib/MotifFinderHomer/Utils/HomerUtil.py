@@ -3,7 +3,7 @@ import os
 import json
 import subprocess
 
-def build_homer_motif_command(inputFilePath):
+def build_homer_motif_command(inputFilePath,min,max):
     if not os.path.exists('/kb/module/work/tmp/homer_out'):
         os.mkdir('/kb/module/work/tmp/homer_out')
     outputDirPath = '/kb/module/work/tmp/homer_out'
@@ -12,6 +12,14 @@ def build_homer_motif_command(inputFilePath):
     #/kb/module/work/homer/bin/
     #command = 'findMotifs.pl ' + inputFilePath + ' fasta ' + outputDirPath +' -basic'
     command = '/kb/deployment/bin/findMotifs.pl ' + inputFilePath + ' fasta ' + outputDirPath +' -basic'
+    command += ' -len '
+    numLens = 0
+    for i in range(min,max+1,2):
+        numLens += 1
+        command += str(i)
+        if i <= max:
+            command += ','
+    command += ' -S 5'
     return command
 
 def build_homer_location_command(inputFilePath):
