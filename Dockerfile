@@ -18,6 +18,7 @@ RUN apt-get --yes --force-yes install zip
 RUN mkdir -p /kb/deps
 COPY ./deps /kb/deps
 RUN echo Making dependency
+COPY ./data /kb/data
 
 RUN \
   sh /kb/deps/kb_psl/install-pyseqlogo.sh && \

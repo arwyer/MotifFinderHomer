@@ -23,9 +23,6 @@ from MotifFinderHomer.Utils.MakeNewReport import MakeReport
 import subprocess
 from biokbase.workspace.client import Workspace
 from MotifFinderHomer.Utils.FastaUtils import RemoveRepeats
-from MotifFinderHomer.Utils.BackgroundUtils import BuildBackground
-from installed_clients.AssemblyUtilClient import AssemblyUtil
-import MotifFinderHomer.Utils.TestUtils as TU
 #END_HEADER
 
 
@@ -45,8 +42,8 @@ class MotifFinderHomer:
     # the latter method is running.
     ######################################### noqa
     VERSION = "0.0.1"
-    GIT_URL = "https://github.com/arwyer/MotifFinderHomer.git"
-    GIT_COMMIT_HASH = "f9539f3664f2156a7cb0d10aa9526237dbcd7ffe"
+    GIT_URL = ""
+    GIT_COMMIT_HASH = ""
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -67,8 +64,7 @@ class MotifFinderHomer:
            optional, used for exact genome locations if possible) ->
            structure: parameter "workspace_name" of String, parameter
            "fastapath" of String, parameter "motif_min_length" of Long,
-           parameter "motif_max_length" of Long, parameter "SS_ref" of
-           String, parameter "obj_name" of String
+           parameter "motif_max_length" of Long, parameter "SS_ref" of String
         :returns: instance of type "extract_output_params" -> structure:
            parameter "report_name" of String, parameter "report_ref" of String
         """
@@ -85,7 +81,7 @@ class MotifFinderHomer:
         #promoterFastaFilePath = self.get_promoter_for_gene(ctx,params)[0]
         promoterFastaFilePath = params['fastapath']
 
-        HomerMotifCommand = HU.build_homer_motif_command(promoterFastaFilePath,motMin,motMax,params['background'])
+        HomerMotifCommand = HU.build_homer_motif_command(promoterFastaFilePath,motMin,motMax)
         HomerLocationCommand = HU.build_homer_location_command(promoterFastaFilePath)
         HU.run_homer_command(HomerMotifCommand)
         HU.run_homer_command(HomerLocationCommand)
@@ -241,35 +237,9 @@ class MotifFinderHomer:
         # return variables are: output
         #BEGIN BuildFastaFromSequenceSet
         dfu = DataFileUtil(self.callback_url)
-
-        if params['TESTFLAG'] and params['background']:
-            targetpath = '/kb/module/work/tmp/testgenome.fa'
-            TU.GetGenome(targetpath)
-            BuildBackground(targetpath)
-        elif params['background']:
-
-            #objectRefs = {'object_refs' : [params['FeatureSet_ref']]}
-            ws = Workspace('https://appdev.kbase.us/services/ws')
-            #ws_name = params['ws_name']
-            subset = ws.get_object_subset([{
-                                         'included':['/features/[*]/location', '/features/[*]/id','/assembly_ref'],
-    'ref':params['genome_ref']}])
-            #features = subset[0]['data']['features']
-            aref = subset[0]['data']['assembly_ref']
-            #objects = dfu.get_objects(objectRefs)
-            #featureSet = objects['data'][0]['data']
-            assembly_ref = {'ref': aref}
-            print('Downloading Assembly data as a Fasta file.')
-            assemblyUtil = AssemblyUtil(self.callback_url)
-            fasta_file = assemblyUtil.get_assembly_as_fasta(assembly_ref)['path']
-            BuildBackground(fasta_file)
-
-        #dfu = DataFileUtil(self.callback_url)
-
         get_objects_params = {'object_refs' : [params['SequenceSetRef']]}
-
         SeqSet = dfu.get_objects(get_objects_params)['data'][0]['data']
-        #print(SeqSet)
+
         outFile = open(params['fasta_outpath'],'w')
         for s in SeqSet['sequences']:
             sname = '>' + s['sequence_id'] + '\n'
@@ -277,9 +247,6 @@ class MotifFinderHomer:
             sseq = s['sequence'] + '\n'
             outFile.write(sseq)
         outFile.close()
-        if params['mask_repeats']:
-            RemoveRepeats(params['fasta_outpath'],params['fasta_outpath'])
-
         output = {'fasta_outpath' : params['fasta_outpath']}
         #END BuildFastaFromSequenceSet
 
@@ -296,8 +263,7 @@ class MotifFinderHomer:
            parameter "workspace_name" of String, parameter "genome_ref" of
            String, parameter "featureSet_ref" of String, parameter
            "promoter_length" of Long, parameter "motif_min_length" of Long,
-           parameter "motif_max_length" of Long, parameter "obj_name" of
-           String
+           parameter "motif_max_length" of Long
         :returns: instance of type "extract_output_params" -> structure:
            parameter "report_name" of String, parameter "report_ref" of String
         """
@@ -345,52 +311,6 @@ class MotifFinderHomer:
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
             raise ValueError('Method DiscoverMotifsFromFasta return value ' +
-                             'output is not type dict as required.')
-        # return the results
-        return [output]
-
-    def DiscoverMotifsFromSequenceSet(self, ctx, params):
-        """
-        :param params: instance of type "discover_seq_input" -> structure:
-           parameter "workspace_name" of String, parameter "genome_ref" of
-           String, parameter "SS_ref" of String, parameter "promoter_length"
-           of Long, parameter "motif_min_length" of Long, parameter
-           "motif_max_length" of Long, parameter "obj_name" of String,
-           parameter "background" of Long, parameter "mask_repeats" of Long,
-           parameter "background_group" of mapping from String to String
-        :returns: instance of type "extract_output_params" -> structure:
-           parameter "report_name" of String, parameter "report_ref" of String
-        """
-        # ctx is the context object
-        # return variables are: output
-        #BEGIN DiscoverMotifsFromSequenceSet
-        fastapath = '/kb/module/work/tmp/tmpSeqSet.fa'
-        newfastapath = '/kb/module/work/tmp/SeqSet.fa'
-        fastapath = newfastapath
-        FastaParams = {'workspace_name' : params['workspace_name'] , 'SequenceSetRef' : params['SS_ref'] , 'fasta_outpath' : fastapath, 'background':params['background_group']['background'],'mask_repeats':params['mask_repeats']}
-        if params['background_group']['background'] == 1:
-            FastaParams['genome_ref'] = params['background_group']['genome_ref']
-        else:
-            FastaParams['genome_ref'] = 'NULL'
-        if 'TESTFLAG' in params:
-            FastaParams['TESTFLAG'] = params['TESTFLAG']
-        else:
-            FastaParams['TESTFLAG'] = 0
-        output = self.BuildFastaFromSequenceSet(ctx,FastaParams)
-
-        #RemoveRepeats(fastapath,newfastapath)
-        findmotifsparams= {'workspace_name' : params['workspace_name'],'fastapath':fastapath,'motif_min_length':params['motif_min_length'],'motif_max_length':params['motif_max_length'],'SS_ref':params['SS_ref'],'obj_name':params['obj_name']}
-        if params['background_group']['background'] == 1:
-            findmotifsparams['background'] = 1
-        else:
-            findmotifsparams['background'] = 0
-
-        output = self.find_motifs(ctx,findmotifsparams)[0]
-        #END DiscoverMotifsFromSequenceSet
-
-        # At some point might do deeper type checking...
-        if not isinstance(output, dict):
-            raise ValueError('Method DiscoverMotifsFromSequenceSet return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
