@@ -12,10 +12,9 @@ from __future__ import print_function
 try:
     # baseclient and this client are in a package
     from .baseclient import BaseClient as _BaseClient  # @UnusedImport
-except:
+except ImportError:
     # no they aren't
     from baseclient import BaseClient as _BaseClient  # @Reimport
-import time
 
 
 class SequenceSetUtils(object):
@@ -40,14 +39,6 @@ class SequenceSetUtils(object):
             async_job_check_time_scale_percent=async_job_check_time_scale_percent,
             async_job_check_max_time_ms=async_job_check_max_time_ms)
 
-    def _check_job(self, job_id):
-        return self._client._check_job('SequenceSetUtils', job_id)
-
-    def _buildFromFasta_submit(self, params, context=None):
-        return self._client._submit_job(
-             'SequenceSetUtils.buildFromFasta', [params],
-             self._service_ver, context)
-
     def buildFromFasta(self, params, context=None):
         """
         :param params: instance of type "FastaInputParams" (ws_name -
@@ -58,22 +49,8 @@ class SequenceSetUtils(object):
            - handle to the new SequenceSet object) -> structure: parameter
            "SequenceSet_ref" of String
         """
-        job_id = self._buildFromFasta_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _buildFromLocations_submit(self, params, context=None):
-        return self._client._submit_job(
-             'SequenceSetUtils.buildFromLocations', [params],
-             self._service_ver, context)
+        return self._client.run_job('SequenceSetUtils.buildFromFasta',
+                                    [params], self._service_ver, context)
 
     def buildFromLocations(self, params, context=None):
         """
@@ -90,22 +67,8 @@ class SequenceSetUtils(object):
            - handle to the new SequenceSet object) -> structure: parameter
            "SequenceSet_ref" of String
         """
-        job_id = self._buildFromLocations_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _buildFromFeatureSet_submit(self, params, context=None):
-        return self._client._submit_job(
-             'SequenceSetUtils.buildFromFeatureSet', [params],
-             self._service_ver, context)
+        return self._client.run_job('SequenceSetUtils.buildFromLocations',
+                                    [params], self._service_ver, context)
 
     def buildFromFeatureSet(self, params, context=None):
         """
@@ -120,28 +83,9 @@ class SequenceSetUtils(object):
            - handle to the new SequenceSet object) -> structure: parameter
            "SequenceSet_ref" of String
         """
-        job_id = self._buildFromFeatureSet_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
+        return self._client.run_job('SequenceSetUtils.buildFromFeatureSet',
+                                    [params], self._service_ver, context)
 
     def status(self, context=None):
-        job_id = self._client._submit_job('SequenceSetUtils.status', 
-            [], self._service_ver, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
+        return self._client.run_job('SequenceSetUtils.status',
+                                    [], self._service_ver, context)

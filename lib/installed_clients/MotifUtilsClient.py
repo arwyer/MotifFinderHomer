@@ -12,10 +12,9 @@ from __future__ import print_function
 try:
     # baseclient and this client are in a package
     from .baseclient import BaseClient as _BaseClient  # @UnusedImport
-except:
+except ImportError:
     # no they aren't
     from baseclient import BaseClient as _BaseClient  # @Reimport
-import time
 
 
 class MotifUtils(object):
@@ -40,14 +39,6 @@ class MotifUtils(object):
             async_job_check_time_scale_percent=async_job_check_time_scale_percent,
             async_job_check_max_time_ms=async_job_check_max_time_ms)
 
-    def _check_job(self, job_id):
-        return self._client._check_job('MotifUtils', job_id)
-
-    def _UploadFromGibbs_submit(self, params, context=None):
-        return self._client._submit_job(
-             'MotifUtils.UploadFromGibbs', [params],
-             self._service_ver, context)
-
     def UploadFromGibbs(self, params, context=None):
         """
         :param params: instance of type "UploadMEMEInParams" (optional -
@@ -57,22 +48,8 @@ class MotifUtils(object):
         :returns: instance of type "UploadOutput" -> structure: parameter
            "obj_ref" of String
         """
-        job_id = self._UploadFromGibbs_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _UploadFromHomer_submit(self, params, context=None):
-        return self._client._submit_job(
-             'MotifUtils.UploadFromHomer', [params],
-             self._service_ver, context)
+        return self._client.run_job('MotifUtils.UploadFromGibbs',
+                                    [params], self._service_ver, context)
 
     def UploadFromHomer(self, params, context=None):
         """
@@ -82,22 +59,8 @@ class MotifUtils(object):
         :returns: instance of type "UploadOutput" -> structure: parameter
            "obj_ref" of String
         """
-        job_id = self._UploadFromHomer_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _UploadFromMEME_submit(self, params, context=None):
-        return self._client._submit_job(
-             'MotifUtils.UploadFromMEME', [params],
-             self._service_ver, context)
+        return self._client.run_job('MotifUtils.UploadFromHomer',
+                                    [params], self._service_ver, context)
 
     def UploadFromMEME(self, params, context=None):
         """
@@ -107,22 +70,8 @@ class MotifUtils(object):
         :returns: instance of type "UploadOutput" -> structure: parameter
            "obj_ref" of String
         """
-        job_id = self._UploadFromMEME_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _UploadFromJASPAR_submit(self, params, context=None):
-        return self._client._submit_job(
-             'MotifUtils.UploadFromJASPAR', [params],
-             self._service_ver, context)
+        return self._client.run_job('MotifUtils.UploadFromMEME',
+                                    [params], self._service_ver, context)
 
     def UploadFromJASPAR(self, params, context=None):
         """
@@ -132,22 +81,8 @@ class MotifUtils(object):
         :returns: instance of type "UploadOutput" -> structure: parameter
            "obj_ref" of String
         """
-        job_id = self._UploadFromJASPAR_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _UploadFromTRANSFAC_submit(self, params, context=None):
-        return self._client._submit_job(
-             'MotifUtils.UploadFromTRANSFAC', [params],
-             self._service_ver, context)
+        return self._client.run_job('MotifUtils.UploadFromJASPAR',
+                                    [params], self._service_ver, context)
 
     def UploadFromTRANSFAC(self, params, context=None):
         """
@@ -157,22 +92,8 @@ class MotifUtils(object):
         :returns: instance of type "UploadOutput" -> structure: parameter
            "obj_ref" of String
         """
-        job_id = self._UploadFromTRANSFAC_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _DownloadMotifSet_submit(self, params, context=None):
-        return self._client._submit_job(
-             'MotifUtils.DownloadMotifSet', [params],
-             self._service_ver, context)
+        return self._client.run_job('MotifUtils.UploadFromTRANSFAC',
+                                    [params], self._service_ver, context)
 
     def DownloadMotifSet(self, params, context=None):
         """
@@ -182,22 +103,8 @@ class MotifUtils(object):
         :returns: instance of type "DownloadOutput" -> structure: parameter
            "destination_path" of String
         """
-        job_id = self._DownloadMotifSet_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _importFromNarrative_submit(self, params, context=None):
-        return self._client._submit_job(
-             'MotifUtils.importFromNarrative', [params],
-             self._service_ver, context)
+        return self._client.run_job('MotifUtils.DownloadMotifSet',
+                                    [params], self._service_ver, context)
 
     def importFromNarrative(self, params, context=None):
         """
@@ -209,28 +116,9 @@ class MotifUtils(object):
         :returns: instance of type "ImportNarrativeOutParams" -> structure:
            parameter "obj_ref" of String
         """
-        job_id = self._importFromNarrative_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
+        return self._client.run_job('MotifUtils.importFromNarrative',
+                                    [params], self._service_ver, context)
 
     def status(self, context=None):
-        job_id = self._client._submit_job('MotifUtils.status', 
-            [], self._service_ver, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
+        return self._client.run_job('MotifUtils.status',
+                                    [], self._service_ver, context)
