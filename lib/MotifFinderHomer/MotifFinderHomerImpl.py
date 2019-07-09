@@ -106,7 +106,12 @@ class MotifFinderHomer:
         homer_params['min_len'] = motMin
         homer_params['max_len'] = motMax
         obj_ref = MOU.UploadFromHomer(homer_params)['obj_ref']
-
+      
+        HU.write_obj_ref(homer_out_path, obj_ref)
+        
+        #file = open(homer_out_path+"/homer_obj.txt","w") 
+        #file.write(obj_ref) 
+        #file.close() 
         #HERE:
         #we've got object ref
         #we've got html building functions
