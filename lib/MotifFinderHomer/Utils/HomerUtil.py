@@ -38,6 +38,11 @@ class HomerUtil:
           print('*******HOMER ERROR******** : ' + command)
           print(e.returncode)
 
+  def write_obj_ref(self, path, obj_ref):
+      file = open(path+"/homer_obj.txt","w")
+      file.write(obj_ref)
+      file.close()
+
   def parse_homer_output(self, path, location):
       outputFilePath = path
       locationFilePath = location
