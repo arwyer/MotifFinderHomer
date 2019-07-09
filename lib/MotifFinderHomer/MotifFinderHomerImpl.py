@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
 import os
-
+import uuid
 from installed_clients.KBaseReportClient import KBaseReport
 import json
 from Bio import SeqIO
@@ -15,17 +15,17 @@ import re
 from pprint import pprint, pformat
 from datetime import datetime
 import uuid
-import MotifFinderHomer.Utils.MotifSetUtil as MSU
+from MotifFinderHomer.Utils.MotifSetUtil import MotifSetUtil
 #import MotifFinderHomer.Utils.HomerUtil as HU
 from MotifFinderHomer.Utils.HomerUtil import HomerUtil
-from MotifFinderHomer.Utils.MakeNewReport import MakeReport
+from MotifFinderHomer.Utils.MakeNewReport import MakeNewReport
 import subprocess
 from biokbase.workspace.client import Workspace
 #from MotifFinderHomer.Utils.FastaUtils import RemoveRepeats
 from MotifFinderHomer.Utils.FastaUtils import FastaUtils
 from MotifFinderHomer.Utils.BackgroundUtils import BackgroundUtils
 from installed_clients.AssemblyUtilClient import AssemblyUtil
-import MotifFinderHomer.Utils.TestUtils as TU
+from MotifFinderHomer.Utils.TestUtils import TestUtils
 #END_HEADER
 
 
@@ -90,6 +90,7 @@ class MotifFinderHomer:
         HU.run_homer_command(HomerMotifCommand)
         HU.run_homer_command(HomerLocationCommand)
         homer_out_path = '/kb/module/work/tmp/homer_out'
+        #homer_out_path = os.path.join(self.shared_folder, str(uuid.uuid4()))
         homer_params = {'ws_name' : params['workspace_name'], 'path' : homer_out_path + '/homerMotifs.all.motifs','location_path' : homer_out_path + '/homer_locations.txt','obj_name' : params['obj_name']}
         MOU = MotifUtils(self.callback_url)
         dfu = DataFileUtil(self.callback_url)
@@ -132,7 +133,8 @@ class MotifFinderHomer:
         dfu = DataFileUtil(self.callback_url)
         get_obj_params = {'object_refs' : [obj_ref]}
         homerMotifSet = dfu.get_objects(get_obj_params)['data'][0]['data']
-        MakeReport(htmlDir,homerMotifSet)
+        mr=MakeNewReport()
+        mr.MakeReport(htmlDir,homerMotifSet)
 
 
         try:
@@ -193,6 +195,7 @@ class MotifFinderHomer:
         dfu = DataFileUtil(self.callback_url)
 
         bu = BackgroundUtils()
+        TU = TestUtils()
         if params['TESTFLAG'] and params['background']:
             targetpath = '/kb/module/work/tmp/testgenome.fa'
             TU.GetGenome(targetpath)
